@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  --ka-red: #ec2227;
+  --ka-green: #228b22;
+}
+
+/* Premium dark glass gradient background */
+.bg-app-gradient {
+  background: radial-gradient(1200px 600px at -10% -10%, rgba(236, 34, 39, 0.2), transparent 60%),
+    radial-gradient(1000px 500px at 110% 10%, rgba(34, 139, 34, 0.18), transparent 60%),
+    linear-gradient(180deg, #121212 0%, #1c1c1c 60%, #121212 100%);
+}
+
+/* Ambient glow blobs */
+.glow-blob {
+  position: absolute;
+  width: 40vw;
+  height: 40vw;
+  filter: blur(80px);
+  opacity: 0.25;
+  border-radius: 50%;
+}
+.glow-1 { left: -10%; top: -10%; background: radial-gradient(circle, var(--ka-red), transparent); }
+.glow-2 { right: -10%; top: 0%; background: radial-gradient(circle, var(--ka-green), transparent); }
+
+/* Glass panel utility */
+.glass {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+}
+
+/* Card styling */
+.card {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.float { animation: float 6s ease-in-out infinite; }
+
+/* Typography */
+body { font-family: var(--font-inter, Inter, system-ui, sans-serif); }
