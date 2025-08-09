@@ -94,8 +94,13 @@ export function Header() {
                   onClick={async () => {
                     const sb = getSupabase();
                     await sb.auth.signOut();
+                    // Clear local caches that might keep you "logged in"
+                    try {
+                      localStorage.removeItem('sb-access-token');
+                      localStorage.removeItem('sb-refresh-token');
+                    } catch {}
                     setMenuOpen(false);
-                    router.push('/auth/sign-in');
+                    router.replace('/auth/sign-in');
                   }}
                 >
                   <LogOut size={16} /> Logout
