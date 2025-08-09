@@ -1,6 +1,6 @@
 import { getSupabase } from "@/lib/supabase";
 import type { MROItem, Progress } from "@/types/mro";
-import type { JobTrackerItem, JobStatus } from "@/types/job-tracker";
+import type { JobTrackerItem } from "@/types/job-tracker";
 
 export async function fetchMROItems(): Promise<MROItem[]> {
   const sb = getSupabase();
@@ -58,8 +58,8 @@ export async function updateMROJob(id: string, input: Partial<UpsertMROJobInput>
 export async function fetchJobTracker(): Promise<JobTrackerItem[]> {
   const sb = getSupabase();
   // Try ordering by created_at; if the column doesn't exist, fallback to unordered
-  let query = sb.from('job_tracker').select('*').order('created_at', { ascending: false }).limit(500);
-  let { data, error } = await query;
+  const query = sb.from('job_tracker').select('*').order('created_at', { ascending: false }).limit(500);
+  const { data, error } = await query;
   if (error) {
     if (typeof window !== 'undefined') console.warn('fetchJobTracker order by created_at failed, retrying without order:', error.message);
     const retry = await sb.from('job_tracker').select('*').limit(500);

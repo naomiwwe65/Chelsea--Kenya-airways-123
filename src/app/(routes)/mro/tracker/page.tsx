@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from 'react';
-import { Search, Activity, AlertTriangle, Settings, Clock, CheckCircle } from 'lucide-react';
+import { Search, Activity, AlertTriangle, Clock, CheckCircle } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/UI/table';
 import type { JobTrackerItem, JobStatus } from '@/types/job-tracker';
 import { fetchJobTracker } from '@/lib/api';
