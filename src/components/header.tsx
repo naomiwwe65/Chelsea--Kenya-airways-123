@@ -6,7 +6,7 @@ import { getSupabase } from "../lib/supabase";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 
-function useOnClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
+function useOnClickOutside(ref: React.RefObject<HTMLElement | null>, handler: () => void) {
   useEffect(() => {
     function listener(e: MouseEvent) {
       if (!ref.current || ref.current.contains(e.target as Node)) return;
