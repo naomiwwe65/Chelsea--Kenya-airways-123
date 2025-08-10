@@ -24,6 +24,10 @@
 .glow-1 { left: -10%; top: -10%; background: radial-gradient(circle, var(--ka-red), transparent); }
 .glow-2 { right: -10%; top: 0%; background: radial-gradient(circle, var(--ka-green), transparent); }
 
+@media (max-width: 768px) {
+  .glow-blob { width: 70vw; height: 70vw; filter: blur(60px); opacity: 0.2; }
+}
+
 /* Glass panel utility */
 .glass {
   background: rgba(255, 255, 255, 0.12);

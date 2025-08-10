@@ -37,7 +37,7 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-semibold">Analytics</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="card min-h-[360px]">
           <p className="text-sm text-white/70 mb-2">Orders Trend (Used vs Restocked)</p>
           <div className="h-[300px]">

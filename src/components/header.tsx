@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Download, LogOut } from "lucide-react";
+import { CalendarDays, Download, LogOut, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getSupabase } from "../lib/supabase";
 import { toast } from "sonner";
@@ -17,7 +17,7 @@ function useOnClickOutside(ref: React.RefObject<HTMLElement>, handler: () => voi
   }, [ref, handler]);
 }
 
-export function Header() {
+export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -44,11 +44,20 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 bg-white/10 backdrop-blur-xl border-b border-white/15">
       <div className="flex items-center justify-between px-4 md:px-8 py-3">
-        <div className="hidden md:flex items-center gap-3 px-3 py-2 rounded-xl bg-white/10 border border-white/15 text-white/70 flex-1 max-w-xl">
-          <input
-            placeholder="Search parts, orders, or MRO tasks..."
-            className="bg-transparent outline-none w-full placeholder:text-white/50"
-          />
+        <div className="flex items-center gap-3">
+          <button
+            className="md:hidden p-2 rounded-lg bg-white/10 border border-white/15 text-white/80"
+            onClick={onMenuClick}
+            aria-label="Open navigation"
+          >
+            <Menu size={18} />
+          </button>
+          <div className="hidden md:flex items-center gap-3 px-3 py-2 rounded-xl bg-white/10 border border-white/15 text-white/70 flex-1 max-w-xl">
+            <input
+              placeholder="Search parts, orders, or MRO tasks..."
+              className="bg-transparent outline-none w-full placeholder:text-white/50"
+            />
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/15 text-white/80">
