@@ -25,6 +25,11 @@ export default function RootLayout({
         <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
           <div className="glow-blob glow-1" />
           <div className="glow-blob glow-2" />
+          <div className="bubble red b1" />
+          <div className="bubble green b2" />
+          <div className="bubble red b3" />
+          <div className="bubble green b4" />
+          <div className="bubble red b5" />
         </div>
         {children}
         <Toaster richColors position="top-right" />
