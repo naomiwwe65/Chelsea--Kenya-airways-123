@@ -87,7 +87,7 @@ export default function MROJobTrackerTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
           <input

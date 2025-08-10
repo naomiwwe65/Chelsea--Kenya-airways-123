@@ -101,7 +101,7 @@ export default function Home() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="card min-h-[360px]">
           <p className="text-sm text-white/70 mb-2">Inventory Usage Trend (Last 30 days)</p>
           <div className="h-[300px]">
@@ -133,7 +133,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="card min-h-[280px]">
           <p className="text-sm text-white/70 mb-2">Recent Activities</p>
           {activities.length === 0 ? (
