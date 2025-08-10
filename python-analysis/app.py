@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from fastapi import FastAPI, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse, Response, PlainTextResponse
 
 from compute_metrics_light import (
     build_client,
@@ -12,6 +12,22 @@ from compute_metrics_light import (
 )
 
 app = FastAPI(title="Kenya MRO Analytics API", version="1.0.0")
+
+
+@app.get("/")
+def root() -> Response:
+    """Simple landing route for health checks and browsers.
+
+    - HEAD / will return 200 OK automatically
+    - GET / redirects to interactive docs for convenience
+    """
+    return RedirectResponse(url="/docs")
+
+
+@app.get("/favicon.ico")
+def favicon() -> Response:
+    """Avoid noisy 404s for favicon requests."""
+    return Response(status_code=204)
 
 
 @app.get("/health")
