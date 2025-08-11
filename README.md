@@ -46,6 +46,75 @@ create policy "public read job_tracker"
 
 Seed example row:
 
+## AWS RDS + dual backend setup
+
+This project can talk to either Supabase directly from the browser or to an AWS-backed Node API that connects to Amazon RDS Postgres. Choose at runtime via env var.
+
+1) Create `web/.env.local` and set:
+
+```
+# Choose backend: "supabase" (default) or "aws"
+NEXT_PUBLIC_BACKEND=aws
+
+# Base URL for browser to call Next.js API routes
+NEXT_PUBLIC_API_BASE_URL=/api
+
+# RDS connection string (example)
+AWS_RDS_URL=postgres://USER:PASSWORD@HOST:5432/DBNAME
+```
+
+2) Tables expected in RDS (same schema as Supabase):
+
+```sql
+-- internal_mro_jobs (subset of columns used by the UI)
+create table if not exists internal_mro_jobs (
+  id uuid default gen_random_uuid() primary key,
+  title text,
+  aircraft_reg_no text,
+  assigned_engineer text,
+  maintenance_date date,
+  status text,
+  created_at timestamptz default now()
+);
+
+-- job_tracker
+create table if not exists job_tracker (
+  id uuid default gen_random_uuid() primary key,
+  customer text not null,
+  description text not null,
+  part_number text,
+  serial_number text,
+  lpo_date date,
+  lpo_number text,
+  ro_number text,
+  kq_repair_order_date date,
+  job_card_no text not null,
+  job_card_date date,
+  kq_works_order_wo_no text,
+  kq_works_order_date date,
+  job_status text not null,
+  job_status_date date,
+  job_card_shared_with_finance text not null,
+  created_at timestamptz default now()
+);
+```
+
+3) Run locally against RDS:
+
+```
+cd web
+npm install
+npm run dev
+```
+
+4) Deploy to AWS (one option):
+
+- Host Next.js on AWS Elastic Beanstalk, ECS Fargate, or Amplify Hosting.
+- Set `AWS_RDS_URL`, `NEXT_PUBLIC_BACKEND=aws`, and `NEXT_PUBLIC_API_BASE_URL=/api` in the app environment.
+- Ensure outbound access from app to the RDS instance (VPC/subnets/security groups).
+
+You can still keep Supabase for other features; switch back by setting `NEXT_PUBLIC_BACKEND=supabase`.
+
 ```sql
 insert into public.job_tracker (
   customer, description, part_number, serial_number,

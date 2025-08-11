@@ -19,6 +19,7 @@
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
+    "pg": "^8.12.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-dropzone": "^14.3.8",
@@ -34,7 +35,9 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
+    "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

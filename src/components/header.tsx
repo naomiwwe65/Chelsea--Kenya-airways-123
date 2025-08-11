@@ -6,7 +6,7 @@ import { getSupabase } from "../lib/supabase";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 
-function useOnClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
+function useOnClickOutside(ref: React.RefObject<HTMLElement | null>, handler: () => void) {
   useEffect(() => {
     function listener(e: MouseEvent) {
       if (!ref.current || ref.current.contains(e.target as Node)) return;
@@ -23,7 +23,7 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
   const [todayLabel, setTodayLabel] = useState<string>("");
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   useOnClickOutside(menuRef, () => setMenuOpen(false));
 
   useEffect(() => {

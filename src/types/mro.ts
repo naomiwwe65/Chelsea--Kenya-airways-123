@@ -22,3 +22,4 @@ export const CATEGORIES: Category[] = ['MAIN', 'SHOP', 'LAB'];
 
 
 
+

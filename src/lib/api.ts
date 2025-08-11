@@ -1,16 +1,33 @@
 import { getSupabase } from "@/lib/supabase";
 import type { MROItem, Progress } from "@/types/mro";
-import type { JobTrackerItem, JobStatus } from "@/types/job-tracker";
+import type { JobTrackerItem } from "@/types/job-tracker";
+
+const USE_AWS_API = (process.env.NEXT_PUBLIC_BACKEND ?? "supabase").toLowerCase() === "aws";
+
+async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "/api";
+  const res = await fetch(`${base}${path}`, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(init?.headers || {}),
+    },
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json() as Promise<T>;
+}
 
 export async function fetchMROItems(): Promise<MROItem[]> {
+  if (USE_AWS_API) {
+    return apiFetch<MROItem[]>("/mro");
+  }
   const sb = getSupabase();
-  // Adapting to existing internal_mro_jobs table; map to MROItem shape
   const { data, error } = await sb
     .from("internal_mro_jobs")
     .select("id,title,aircraft_reg_no,assigned_engineer,maintenance_date,status")
     .order("created_at", { ascending: false })
     .limit(200);
-
   if (error) return [];
   return (data ?? []).map((j: {
     id: string;
@@ -42,6 +59,9 @@ export interface UpsertMROJobInput {
 }
 
 export async function createMROJob(input: UpsertMROJobInput) {
+  if (USE_AWS_API) {
+    return apiFetch<{ id: string }>("/mro", { method: "POST", body: JSON.stringify(input) });
+  }
   const sb = getSupabase();
   const { data, error } = await sb.from('internal_mro_jobs').insert([input]).select('id').single();
   if (error) throw error;
@@ -49,6 +69,9 @@ export async function createMROJob(input: UpsertMROJobInput) {
 }
 
 export async function updateMROJob(id: string, input: Partial<UpsertMROJobInput>) {
+  if (USE_AWS_API) {
+    return apiFetch<{ id: string }>(`/mro/${id}`, { method: "PATCH", body: JSON.stringify(input) });
+  }
   const sb = getSupabase();
   const { data, error } = await sb.from('internal_mro_jobs').update(input).eq('id', id).select('id').single();
   if (error) throw error;
@@ -56,15 +79,15 @@ export async function updateMROJob(id: string, input: Partial<UpsertMROJobInput>
 }
 
 export async function fetchJobTracker(): Promise<JobTrackerItem[]> {
+  if (USE_AWS_API) {
+    return apiFetch<JobTrackerItem[]>("/job-tracker");
+  }
   const sb = getSupabase();
-  // Try ordering by created_at; if the column doesn't exist, fallback to unordered
-  let query = sb.from('job_tracker').select('*').order('created_at', { ascending: false }).limit(500);
-  let { data, error } = await query;
+  const query = sb.from('job_tracker').select('*').order('created_at', { ascending: false }).limit(500);
+  const { data, error } = await query;
   if (error) {
-    if (typeof window !== 'undefined') console.warn('fetchJobTracker order by created_at failed, retrying without order:', error.message);
     const retry = await sb.from('job_tracker').select('*').limit(500);
     if (retry.error) {
-      if (typeof window !== 'undefined') console.warn('fetchJobTracker error:', retry.error.message);
       return [];
     }
     return retry.data as JobTrackerItem[];
@@ -73,6 +96,12 @@ export async function fetchJobTracker(): Promise<JobTrackerItem[]> {
 }
 
 export async function upsertJobTracker(item: Partial<JobTrackerItem> & { id?: string }) {
+  if (USE_AWS_API) {
+    if (item.id) {
+      return apiFetch<{ id: string }>(`/job-tracker/${item.id}`, { method: "PATCH", body: JSON.stringify(item) });
+    }
+    return apiFetch<{ id: string }>(`/job-tracker`, { method: "POST", body: JSON.stringify(item) });
+  }
   const sb = getSupabase();
   if (item.id) {
     const { data, error } = await sb.from('job_tracker').update(item).eq('id', item.id).select('id').single();
