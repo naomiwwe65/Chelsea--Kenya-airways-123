@@ -1,76 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chelsea — Kenya Airways MRO Dashboard
 
-## Getting Started
+A modern Next.js (TypeScript) dashboard for Kenya Airways MRO analytics, with an optional Python FastAPI microservice for additional data processing.
 
-First, run the development server:
+Live demo
+- App (Vercel): https://chelsea-kenya-airways-123.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Overview
+- Frontend: Next.js (App Router) + TypeScript
+- Styling/Components: Tailwind CSS + (project UI components)
+- Auth: client-side route protection (see app/(protected) layout)
+- API: Next.js API routes; optional Python FastAPI service for analytics
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Repository structure (high-level)
+- app/ … Next.js routes, layouts, pages
+- components/ … shared UI components
+- lib/ … utilities (API, hooks, etc.)
+- public/ … static assets
+- python-analysis/ … optional FastAPI microservice (health/compute)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Quick start (web)
+1) Install dependencies
+   - npm install
+2) Run dev server
+   - npm run dev
+   - Open http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Environment variables (web)
+Create web/.env.local and fill values as needed. Example if using Supabase:
+- NEXT_PUBLIC_SUPABASE_URL=your-url
+- NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
-## Supabase setup
+Restart the dev server after adding/updating env vars.
 
-The app reads Supabase credentials from environment variables. Create `web/.env.local` with:
+FastAPI microservice (optional)
+Location: python-analysis/
+- Create virtual env and install:
+  - cd python-analysis
+  - python -m venv .venv && source .venv/bin/activate (Windows: .venv\\Scripts\\activate)
+  - pip install -r requirements.txt
+- Run locally:
+  - uvicorn main:app --reload --port 8000
+- Endpoints:
+  - GET /health -> { status: "ok" }
+  - POST /compute -> run analytics task
+- Deploy example: Render.com (create a new web service pointing to python-analysis with start command `uvicorn main:app --host 0.0.0.0 --port $PORT`)
 
-```
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
+Auth and protected routes
+- The protected layout enforces client-side auth checks and redirects unauthenticated users to /auth/sign-in.
+- On logout, tokens are cleared and router.replace is used for redirects.
 
-You can copy `web/.env.local.example` and fill in your values. After changing env vars, restart the dev server.
+Scripts
+- npm run dev — start local dev server
+- npm run build — build for production
+- npm start — start production server
+- npm run lint — lint project
 
-Ensure the `job_tracker` table exists and your Row Level Security (RLS) policies allow read/write for your use case. For quick local testing you can temporarily allow public read:
+Deployment
+- Web: Vercel (recommended). Import the repo in Vercel, set required env vars, and deploy.
+- Python: Render (or your preferred host) for the FastAPI microservice.
 
-```sql
--- Enable RLS if not enabled
-alter table public.job_tracker enable row level security;
+Notes
+- If you run both services locally, remember to configure CORS and the web app’s API base URL to reach the Python service (e.g., http://localhost:8000).
+- Keep env secrets out of the repository.
 
--- Public read policy (adjust for your auth model)
-create policy "public read job_tracker"
-  on public.job_tracker for select
-  to anon, authenticated
-  using (true);
-```
+Contributing
+- Issues and PRs are welcome. Please follow conventional commits for clarity.
 
-Seed example row:
-
-```sql
-insert into public.job_tracker (
-  customer, description, part_number, serial_number,
-  lpo_date, lpo_number, ro_number, kq_repair_order_date,
-  job_card_no, job_card_date, kq_works_order_wo_no, kq_works_order_date,
-  job_status, job_status_date, job_card_shared_with_finance
-) values (
-  'Acme Airlines', 'Starter Generator Repair', 'SG-123', 'SN-999',
-  null, 'LPO-001', 'RO-001', null,
-  'JC-1001', current_date, 'WO-77', null,
-  'Pending', current_date, 'No'
-);
-```
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
